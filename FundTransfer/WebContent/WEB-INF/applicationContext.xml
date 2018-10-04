@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
+
+	<context:component-scan base-package="com.bank.bean,com.bank.entity,com.bank.repository,com.bank.service,com.bank.testing" />
+	
+	<bean id="exampleDataSource" 
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />
+		<property name="username" value="bank" />
+		<property name="password" value="bank" />
+	</bean>
+		 
+	<bean id="exampleSessionFactory" 
+			class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="exampleDataSource"/>
+		<property name="hibernateProperties">
+			<value>
+				hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
+				hibernate.hbm2ddl.auto=update
+				hibernate.show_sql=true
+			</value>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+		        <value>com.bank.entity.Aadhaar</value>
+		        <value>com.bank.entity.Accounts</value>
+		        <value>com.bank.entity.Cards</value>
+		        <value>com.bank.entity.FixedDeposit</value>
+		        <value>com.bank.entity.Payee</value>
+		        <value>com.bank.entity.Transactions</value>
+		   	</list>
+		</property>		
+	</bean>
+	
+	<bean id="txManager" 
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="exampleSessionFactory" />
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="txManager"/>
+</beans>
